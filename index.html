@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>NYCCAS Dashboard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link href='https://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+		<link rel = "stylesheet" type="text/css" href="style.css">
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+	</head>
+<style>
+
+body{
+	/*font-family: arial,sans-serif;*/
+	font-family: 'Oxygen', sans-serif;
+	font-weight: 300;
+	overflow: none;
+	
+}
+
+h1 {
+	font-weight: 700;
+}
+
+h4 {
+	margin-top: -23px;
+}
+
+#chart { 
+	height: 500px; 
+}
+
+#text {
+	position: absolute;
+	top: 200px;
+	right: 100px;
+}
+
+.circle {
+	/*stroke: white;*/
+/*	fill: red;*/
+	opacity: 0.7;
+}
+
+.circle:hover {
+	fill: red;
+    stroke: red;
+    opacity: 1;
+    stroke-width: 10px;
+}
+
+div.tooltip {   
+    position: absolute;           
+    text-align: left;           
+    width: auto;                  
+    height: auto;                 
+    padding: 8px;             
+    font: 12px sans-serif;        
+    background: white;   
+    border: white 1px solid;      
+    border-radius: 0px;           
+    pointer-events: none;         
+  }
+
+
+
+</style>
+
+<body>
+
+<!-- DOHMH navbar -->		
+<nav class="navbar navbar-default navbar-dohmh">
+	<div class="container-fluid">
+	    <!-- Hamberger -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="http://www.nyc.gov/html/doh/html/home/home.shtml" target="_blank"></a>
+	    </div>
+
+	    <!-- Navbar menu items -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">      
+	      <ul class="nav navbar-nav navbar-right">
+	        <li><a href="http://www.nyc.gov/nyc-resources/categories.page" target="_blank">NYC Resources</a></li>
+	        <li><a href="http://www.nyc.gov/311/" target="_blank">311</a></li>
+	        <li><a href="http://www.nyc.gov/office-of-the-mayor/" target="_blank">Office of the Mayor</a></li>   
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	</div><!-- /.container-fluid -->
+</nav>
+
+<div class="container-fluid info">	
+	<div id="title">
+		<h1>Dog Names in New York City</h1>
+		<p>Each bubble represents a dog name<br />
+			by frequency of occurrence. <br />
+			Hover on a bubble to show details.</p>
+
+	</div>
+
+	<div id = "chart">
+		<div id = "text"></div>
+	</div>
+</div>
+
+
+
+
+<script>
+
+// var color = d3.scale.quantize()
+//     .range(["#156b87", "#876315", "#543510", "#872815"]);
+
+var color = d3.scale.linear().range(["#156b87","purple"]);
+
+var size = 960;
+
+var pack = d3.layout.pack()
+    .sort(null)
+    .size([size, size])
+    .value(function(d) { return d.Count_AnimalName * 10; })
+    .padding(5);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", size)
+    .attr("height", size)
+    .style("display", "block")
+    .style("margin", "auto");
+
+d3.csv("dogNames2.csv", ready);
+
+
+function ready(error, data) {
+	if (error) throw error;
+
+	console.log(data);
+
+	data.forEach(function(d) {
+		d.Count_AnimalName = +d.Count_AnimalName;
+  		//d.distance = d.distance ? +d.distance : Infinity;
+	});
+
+	
+//   data.sort(function(a, b) {
+//     return isFinite(a.distance) || isFinite(b.distance)
+//         ? a.distance - b.distance
+//         : 0;
+//   });
+
+  	color.domain(d3.extent(data, function(d) { return d.Count_AnimalName; }));
+
+
+  	svg.selectAll("circle")
+	    .data(pack.nodes({children: data}).slice(1))
+	    .enter().append("circle")
+	    .attr("class", "circle")
+	    .attr("r", function(d) { return d.r; })
+	    .attr("cx", function(d) { return d.x; })
+	    .attr("cy", function(d) { return d.y; })
+	    .style("fill", function(d) { return color(d.Count_AnimalName); })
+	    .on("mouseover", function(d){
+	    	d3.select("#text").html("<h2>" + d.Row_Labels + "</h2><br /><h4>" + d.Count_AnimalName + " dog names</h4>");
+      	});
+      	// .on("mouseout", function(d) {      
+       //    	d3.select("#text").style("opacity", 0);
+       //  });   
+    // .append("title")
+    //   .text(function(d) {
+    //     return d.name
+    //         + "\nplanet radius: " + d.radius + " EU"
+    //         + "\nstar distance: " + isFinite(d.distance) ? d.distance : "N/A" + " pc";
+    //   });
+};
+
+d3.select(self.frameElement).style("height", size + "px");
+
+</script>
+</body>
