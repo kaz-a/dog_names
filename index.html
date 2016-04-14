@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 	<head>
-		<title>NYCCAS Dashboard</title>
+		<title>NYC Dog Names</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,6 +10,7 @@
 		<link rel = "stylesheet" type="text/css" href="style.css">
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
+		<script data-require="angular.js@1.4.8" data-semver="1.4.8" src="https://code.angularjs.org/1.4.8/angular.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 	</head>
@@ -39,6 +40,12 @@ h4 {
 	position: absolute;
 	top: 200px;
 	right: 100px;
+}
+
+#title {
+	position: absolute;
+	top: 50px;
+	z-index: -10;
 }
 
 .circle {
@@ -104,13 +111,25 @@ div.tooltip {
 		<p>Each bubble represents a dog name<br />
 			by frequency of occurrence. <br />
 			Hover on a bubble to show details.</p>
+		<!-- <div ng-controller="ListController as listCtrl">        
+        	Search for: <input type = "text" ng-model="criteria">       
+    	</div>
+    	<div class="list-group">
+	        <a href="" ng-click="listCtrl.select(hero)" ng-repeat="dogName in listCtrl.dogNames | limitTo: numberOfRows | filter: criteria" class="list-group-item">
+	        {{ $index + 1 }}.  {{ dogName.name }} : {{ dogName.identity }} 
+	          
+            </a>
+        </div> -->
 
 	</div>
 
 	<div id = "chart">
 		<div id = "text"></div>
 	</div>
+
+
 </div>
+
 
 
 
@@ -122,13 +141,13 @@ div.tooltip {
 
 var color = d3.scale.linear().range(["#156b87","purple"]);
 
-var size = 960;
+var size = 1000;
 
 var pack = d3.layout.pack()
     .sort(null)
-    .size([size, size])
+    .size([size, size-100])
     .value(function(d) { return d.Count_AnimalName * 10; })
-    .padding(5);
+    .padding(2);
 
 var svg = d3.select("#chart").append("svg")
     .attr("width", size)
@@ -183,5 +202,31 @@ function ready(error, data) {
 
 d3.select(self.frameElement).style("height", size + "px");
 
-</script>
+
+
+
+
+angular.module("app", []);
+
+angular.module("app") 
+.controller("ListController", ListController)
+
+function ListController() {
+    
+    var listCtrl = this;
+    
+    listCtrl.dogNames = [{identity: "John Joenzz", name:'Martian Manhunter'}
+                  ,{identity: "Kara Danvers", name: "Supergirl"},
+                  {identity: "Oliver Queen", name: "Green Arrow"}];
+    
+    listCtrl.select = function(dogName) {
+      listCtrl.selectedDogName = dogName;
+    }
+    
+  } 
+  
+  $scope.listCtrl = new ListController();
+
+
+  </script>
 </body>
