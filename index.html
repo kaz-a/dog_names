@@ -1,24 +1,20 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html>
 	<head>
 		<title>NYC Dog Names</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link href='https://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 		<link rel = "stylesheet" type="text/css" href="style.css">
-		
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
-		<script data-require="angular.js@1.4.8" data-semver="1.4.8" src="https://code.angularjs.org/1.4.8/angular.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
 	</head>
 <style>
 
 body{
 	/*font-family: arial,sans-serif;*/
-	font-family: 'Oxygen', sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 300;
 	overflow: none;
 	
@@ -48,6 +44,13 @@ h4 {
 	z-index: -10;
 }
 
+.title {
+	position: absolute;
+	top: 120px;
+	width: 36%;
+	/*z-index: -10;*/
+}
+
 .circle {
 	/*stroke: white;*/
 /*	fill: red;*/
@@ -60,6 +63,29 @@ h4 {
     opacity: 1;
     stroke-width: 10px;
 }
+
+
+.circle-hover {
+	fill: red;
+    stroke: red;
+    opacity: 1;
+    stroke-width: 10px;
+}
+
+.button {
+	background: none;
+	border: none;
+	width: 36%;
+}
+
+.button .btn-default:hover {
+	color: red;
+}
+
+.search{
+	width: 36%;
+}
+
 
 div.tooltip {   
     position: absolute;           
@@ -108,18 +134,17 @@ div.tooltip {
 <div class="container-fluid info">	
 	<div id="title">
 		<h1>Dog Names in New York City</h1>
+	</div>
+	<div class="title">
 		<p>Each bubble represents a dog name<br />
 			by frequency of occurrence. <br />
 			Hover on a bubble to show details.</p>
-		<!-- <div ng-controller="ListController as listCtrl">        
-        	Search for: <input type = "text" ng-model="criteria">       
-    	</div>
-    	<div class="list-group">
-	        <a href="" ng-click="listCtrl.select(hero)" ng-repeat="dogName in listCtrl.dogNames | limitTo: numberOfRows | filter: criteria" class="list-group-item">
-	        {{ $index + 1 }}.  {{ dogName.name }} : {{ dogName.identity }} 
-	          
-            </a>
-        </div> -->
+        
+        <div class="search">
+        	<input type="text" id="userInput" class="form-control" placeholder="Search Name">
+        	<!-- <div class="well"></div> -->
+        </div>
+        <div class="button"></div>
 
 	</div>
 
@@ -130,7 +155,10 @@ div.tooltip {
 
 </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 
 
 
@@ -155,8 +183,10 @@ var svg = d3.select("#chart").append("svg")
     .style("display", "block")
     .style("margin", "auto");
 
+
 d3.csv("dogNames2.csv", ready);
 
+//var alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 function ready(error, data) {
 	if (error) throw error;
@@ -165,20 +195,12 @@ function ready(error, data) {
 
 	data.forEach(function(d) {
 		d.Count_AnimalName = +d.Count_AnimalName;
-  		//d.distance = d.distance ? +d.distance : Infinity;
 	});
-
-	
-//   data.sort(function(a, b) {
-//     return isFinite(a.distance) || isFinite(b.distance)
-//         ? a.distance - b.distance
-//         : 0;
-//   });
 
   	color.domain(d3.extent(data, function(d) { return d.Count_AnimalName; }));
 
-
-  	svg.selectAll("circle")
+  	
+  	var circles = svg.selectAll("circle")
 	    .data(pack.nodes({children: data}).slice(1))
 	    .enter().append("circle")
 	    .attr("class", "circle")
@@ -188,16 +210,58 @@ function ready(error, data) {
 	    .style("fill", function(d) { return color(d.Count_AnimalName); })
 	    .on("mouseover", function(d){
 	    	d3.select("#text").html("<h2>" + d.Row_Labels + "</h2><br /><h4>" + d.Count_AnimalName + " dog names</h4>");
-      	});
-      	// .on("mouseout", function(d) {      
-       //    	d3.select("#text").style("opacity", 0);
-       //  });   
+      	})
+      	.on("mouseout", function(d) {      
+          	d3.select("#text").html("");
+        });
     // .append("title")
     //   .text(function(d) {
-    //     return d.name
-    //         + "\nplanet radius: " + d.radius + " EU"
-    //         + "\nstar distance: " + isFinite(d.distance) ? d.distance : "N/A" + " pc";
+    //     return d.Row_Labels;
     //   });
+
+
+	// search
+  	d3.select("#userInput").on("keyup", search);
+
+	function search(value, d) {
+		var input = this.value.toUpperCase();  
+		var name = d.Row_Labels;		
+	    var name = input;	
+	    console.log(name);
+
+	    // get the count for user-input name	    
+	    var nameObj = data.filter(function(d) { return d.Row_Labels == input });
+	    console.log(nameObj);
+	    var count = nameObj[0].Count_AnimalName;
+	    console.log(count);
+
+	    circles.classed("circle-hover", function(d) { return name == d.Row_Labels; });
+	    var subtext = d3.select("#text").html("<h2>" + name + "</h2><br />");
+	    subtext.append("h4")
+	    	.text(name == "" ? "" : count)
+	    	.style("top", "20px");
+
+	};
+
+	function unsearch(d) {
+    	circles.classed("circle-hover", false);
+    	d3.select("#text").html("");
+  	};
+
+
+	// //create buttons
+	// var buttons = d3.select(".button").selectAll(".button")
+	//     .data(alphabet)
+	//     .enter()
+	//     .append("button")
+	//     .attr("class", "btn btn-default")
+	//     .text(function(d) { return d; })
+	//     .on("click", function(d) { 
+	//     		console.log(d);
+	//     });
+
+
+
 };
 
 d3.select(self.frameElement).style("height", size + "px");
@@ -206,27 +270,8 @@ d3.select(self.frameElement).style("height", size + "px");
 
 
 
-angular.module("app", []);
-
-angular.module("app") 
-.controller("ListController", ListController)
-
-function ListController() {
-    
-    var listCtrl = this;
-    
-    listCtrl.dogNames = [{identity: "John Joenzz", name:'Martian Manhunter'}
-                  ,{identity: "Kara Danvers", name: "Supergirl"},
-                  {identity: "Oliver Queen", name: "Green Arrow"}];
-    
-    listCtrl.select = function(dogName) {
-      listCtrl.selectedDogName = dogName;
-    }
-    
-  } 
-  
-  $scope.listCtrl = new ListController();
-
 
   </script>
+
+
 </body>
