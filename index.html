@@ -238,8 +238,7 @@ function ready(error, data) {
 	    circles.classed("circle-hover", function(d) { return name == d.Row_Labels; });
 	    var subtext = d3.select("#text").html("<h2>" + name + "</h2><br />");
 	    subtext.append("h4")
-	    	.text(name == "" ? "" : count)
-	    	.style("top", "20px");
+	    	.text(name == "" ? "" : count);
 
 	};
 
