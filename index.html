@@ -131,7 +131,7 @@ div.tooltip {
 	</div><!-- /.container-fluid -->
 </nav>
 
-<div class="container-fluid info">	
+<div class="container info">	
 	<div id="title">
 		<h1>Dog Names in New York City</h1>
 	</div>
@@ -238,7 +238,7 @@ function ready(error, data) {
 	    circles.classed("circle-hover", function(d) { return name == d.Row_Labels; });
 	    var subtext = d3.select("#text").html("<h2>" + name + "</h2><br />");
 	    subtext.append("h4")
-	    	.text(name == "" ? "" : count);
+	    	.text(name == "" ? "" : count + " dog names");
 
 	};
 
@@ -264,6 +264,7 @@ function ready(error, data) {
 };
 
 d3.select(self.frameElement).style("height", size + "px");
+
 
 
 
