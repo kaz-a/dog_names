@@ -4,7 +4,7 @@
 		<title>NYC Dog Names</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+		
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 		<link rel = "stylesheet" type="text/css" href="style.css">
@@ -13,7 +13,6 @@
 <style>
 
 body{
-	/*font-family: arial,sans-serif;*/
 	font-family: 'Lato', sans-serif;
 	font-weight: 300;
 	overflow: none;
@@ -100,6 +99,111 @@ div.tooltip {
     pointer-events: none;         
   }
 
+  /*** Works on common browsers ***/
+::selection {
+	background-color: #53c2c4;	
+}
+
+/*** Mozilla based browsers ***/
+::-moz-selection {
+	background-color: #53c2c4;
+}
+  
+/***For Other Browsers ***/
+::-o-selection {
+	background-color: #53c2c4;	
+}
+ 
+::-ms-selection {
+	background-color: #53c2c4;	
+}
+   
+/*** For Webkit ***/
+::-webkit-selection {
+	background-color: #53c2c4;
+}
+
+
+a.navbar-brand {
+	background-image: url("images/dohmh_logo.png");
+	background-size: cover;
+	width: 109px;
+	height: 70px;
+	margin-top: -28px;
+}
+
+.navbar-default {
+	background-color: transparent;
+	border-color: transparent;
+}
+
+.navbar-dohmh {
+	background-color: black;
+	border-radius: 0px;
+}
+
+.navbar-default .navbar-nav>li>a {
+	color: white;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+	color: red;
+}
+
+.navbar-default .navbar-nav>li>a:focus {
+	color: white;
+}
+
+.navbar {
+	margin-bottom: 0px;
+}
+
+.navbar-epht {
+	background-color: beige;
+	border-radius: 0px;
+}
+
+.navbar-default .navbar-toggle {
+	border-color: transparent;
+}
+
+.btn {
+	border-radius: 0px !important;
+	transition: linear, ease-in 0.3s !important;
+}
+
+.btn:focus {
+	color: white !important;
+}
+
+.btn-default {
+	color: black !important;
+	background: transparent !important;
+	border-color: white !important;
+	padding: 2% !important;
+}
+
+.btn-default:hover {
+	color: white !important;
+	background: black !important;
+	border-color: black !important;
+}
+
+.btn-default:focus {
+	outline: none !important;
+	text-decoration: none !important;
+	color: white !important;
+}
+
+.btn-default a {
+	color: black !important;
+}
+
+.btn-default a:focus {
+	color: red !important;
+}
+
+
 
 
 </style>
@@ -161,11 +265,7 @@ div.tooltip {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 
 
-
 <script>
-
-// var color = d3.scale.quantize()
-//     .range(["#156b87", "#876315", "#543510", "#872815"]);
 
 var color = d3.scale.linear().range(["#156b87","purple"]);
 
@@ -185,8 +285,6 @@ var svg = d3.select("#chart").append("svg")
 
 
 d3.csv("dogNames2.csv", ready);
-
-//var alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 function ready(error, data) {
 	if (error) throw error;
@@ -214,11 +312,7 @@ function ready(error, data) {
       	.on("mouseout", function(d) {      
           	d3.select("#text").html("");
         });
-    // .append("title")
-    //   .text(function(d) {
-    //     return d.Row_Labels;
-    //   });
-
+ 
 
 	// search
   	d3.select("#userInput").on("keyup", search);
@@ -246,19 +340,6 @@ function ready(error, data) {
     	circles.classed("circle-hover", false);
     	d3.select("#text").html("");
   	};
-
-
-	// //create buttons
-	// var buttons = d3.select(".button").selectAll(".button")
-	//     .data(alphabet)
-	//     .enter()
-	//     .append("button")
-	//     .attr("class", "btn btn-default")
-	//     .text(function(d) { return d; })
-	//     .on("click", function(d) { 
-	//     		console.log(d);
-	//     });
-
 
 
 };
