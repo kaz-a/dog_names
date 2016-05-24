@@ -2,90 +2,73 @@
 <html>
 	<head>
 		<title>NYC Dog Names</title>
-		<meta charset="utf-8">
+		<meta charset="utf-8" http-equiv="X-UA-Compatible" content="IE=9" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-		<link rel = "stylesheet" type="text/css" href="style.css">
 
 	</head>
 <style>
-
 body{
 	font-family: 'Lato', sans-serif;
 	font-weight: 300;
 	overflow: none;
 	
 }
-
 h1 {
 	font-weight: 700;
 }
-
 h4 {
 	margin-top: -23px;
 }
-
 #chart { 
 	height: 500px; 
 }
-
 #text {
 	position: absolute;
 	top: 200px;
 	right: 100px;
 }
-
 #title {
 	position: absolute;
 	top: 50px;
 	z-index: -10;
 }
-
 .title {
 	position: absolute;
 	top: 120px;
-	width: 36%;
+	width: 26%;
 	/*z-index: -10;*/
 }
-
 .circle {
 	/*stroke: white;*/
 /*	fill: red;*/
 	opacity: 0.7;
 }
-
 .circle:hover {
 	fill: red;
     stroke: red;
     opacity: 1;
     stroke-width: 10px;
 }
-
-
 .circle-hover {
 	fill: red;
     stroke: red;
     opacity: 1;
     stroke-width: 10px;
 }
-
 .button {
 	background: none;
 	border: none;
 	width: 36%;
 }
-
 .button .btn-default:hover {
 	color: red;
 }
-
 .search{
-	width: 36%;
+	width: 56%;
 }
-
-
 div.tooltip {   
     position: absolute;           
     text-align: left;           
@@ -98,12 +81,10 @@ div.tooltip {
     border-radius: 0px;           
     pointer-events: none;         
   }
-
   /*** Works on common browsers ***/
 ::selection {
 	background-color: #53c2c4;	
 }
-
 /*** Mozilla based browsers ***/
 ::-moz-selection {
 	background-color: #53c2c4;
@@ -122,8 +103,6 @@ div.tooltip {
 ::-webkit-selection {
 	background-color: #53c2c4;
 }
-
-
 a.navbar-brand {
 	background-image: url("https://raw.githubusercontent.com/Kaz-A/dog_names/master/images/dohmh_logo.png");
 	background-size: cover;
@@ -131,81 +110,62 @@ a.navbar-brand {
 	height: 70px;
 	margin-top: -28px;
 }
-
 .navbar-default {
 	background-color: transparent;
 	border-color: transparent;
 }
-
 .navbar-dohmh {
 	background-color: black;
 	border-radius: 0px;
 }
-
 .navbar-default .navbar-nav>li>a {
 	color: white;
 }
-
 .navbar-default .navbar-nav>li>a:hover {
 	color: red;
 }
-
 .navbar-default .navbar-nav>li>a:focus {
 	color: white;
 }
-
 .navbar {
 	margin-bottom: 0px;
 }
-
 .navbar-epht {
 	background-color: beige;
 	border-radius: 0px;
 }
-
 .navbar-default .navbar-toggle {
 	border-color: transparent;
 }
-
 .btn {
 	border-radius: 0px !important;
 	transition: linear, ease-in 0.3s !important;
 }
-
 .btn:focus {
 	color: white !important;
 }
-
 .btn-default {
 	color: black !important;
 	background: transparent !important;
 	border-color: white !important;
 	padding: 2% !important;
 }
-
 .btn-default:hover {
 	color: white !important;
 	background: black !important;
 	border-color: black !important;
 }
-
 .btn-default:focus {
 	outline: none !important;
 	text-decoration: none !important;
 	color: white !important;
 }
-
 .btn-default a {
 	color: black !important;
 }
-
 .btn-default a:focus {
 	color: red !important;
 }
-
-
-
-
 </style>
 
 <body>
@@ -266,37 +226,26 @@ a.navbar-brand {
 
 
 <script>
-
 var color = d3.scale.linear().range(["#156b87","purple"]);
-
 var size = 1000;
-
 var pack = d3.layout.pack()
     .sort(null)
     .size([size, size-100])
     .value(function(d) { return d.Count_AnimalName * 10; })
     .padding(2);
-
 var svg = d3.select("#chart").append("svg")
     .attr("width", size)
     .attr("height", size)
     .style("display", "block")
     .style("margin", "auto");
-
-
 d3.csv("https://raw.githubusercontent.com/Kaz-A/dog_names/master/dogNames2.csv", ready);
-
 function ready(error, data) {
 	if (error) throw error;
-
 	console.log(data);
-
 	data.forEach(function(d) {
 		d.Count_AnimalName = +d.Count_AnimalName;
 	});
-
   	color.domain(d3.extent(data, function(d) { return d.Count_AnimalName; }));
-
   	
   	var circles = svg.selectAll("circle")
 	    .data(pack.nodes({children: data}).slice(1))
@@ -313,45 +262,29 @@ function ready(error, data) {
           	d3.select("#text").html("");
         });
  
-
 	// search
   	d3.select("#userInput").on("keyup", search);
-
 	function search(value, d) {
 		var input = this.value.toUpperCase();  
 		var name = d.Row_Labels;		
 	    var name = input;	
 	    console.log(name);
-
 	    // get the count for user-input name	    
 	    var nameObj = data.filter(function(d) { return d.Row_Labels == input });
 	    console.log(nameObj);
 	    var count = nameObj[0].Count_AnimalName;
 	    console.log(count);
-
 	    circles.classed("circle-hover", function(d) { return name == d.Row_Labels; });
 	    var subtext = d3.select("#text").html("<h2>" + name + "</h2><br />");
 	    subtext.append("h4")
 	    	.text(name == "" ? "" : count + " dog names");
-
 	};
-
 	function unsearch(d) {
     	circles.classed("circle-hover", false);
     	d3.select("#text").html("");
   	};
-
-
 };
-
 d3.select(self.frameElement).style("height", size + "px");
-
-
-
-
-
-
-
   </script>
 
 
