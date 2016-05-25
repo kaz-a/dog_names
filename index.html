@@ -38,12 +38,15 @@ h4 {
 .title {
 	position: absolute;
 	top: 120px;
-	width: 26%;
-	/*z-index: -10;*/
+	width: 20%;
+}
+.link {
+	line-height: 40px;
+}
+.link:hover {
+	color: red;
 }
 .circle {
-	/*stroke: white;*/
-/*	fill: red;*/
 	opacity: 0.7;
 }
 .circle:hover {
@@ -57,51 +60,6 @@ h4 {
     stroke: red;
     opacity: 1;
     stroke-width: 10px;
-}
-.button {
-	background: none;
-	border: none;
-	width: 36%;
-}
-.button .btn-default:hover {
-	color: red;
-}
-.search{
-	width: 56%;
-}
-div.tooltip {   
-    position: absolute;           
-    text-align: left;           
-    width: auto;                  
-    height: auto;                 
-    padding: 8px;             
-    font: 12px sans-serif;        
-    background: white;   
-    border: white 1px solid;      
-    border-radius: 0px;           
-    pointer-events: none;         
-  }
-  /*** Works on common browsers ***/
-::selection {
-	background-color: #53c2c4;	
-}
-/*** Mozilla based browsers ***/
-::-moz-selection {
-	background-color: #53c2c4;
-}
-  
-/***For Other Browsers ***/
-::-o-selection {
-	background-color: #53c2c4;	
-}
- 
-::-ms-selection {
-	background-color: #53c2c4;	
-}
-   
-/*** For Webkit ***/
-::-webkit-selection {
-	background-color: #53c2c4;
 }
 a.navbar-brand {
 	background-image: url("https://raw.githubusercontent.com/Kaz-A/dog_names/master/images/dohmh_logo.png");
@@ -130,42 +88,10 @@ a.navbar-brand {
 .navbar {
 	margin-bottom: 0px;
 }
-.navbar-epht {
-	background-color: beige;
-	border-radius: 0px;
-}
 .navbar-default .navbar-toggle {
 	border-color: transparent;
 }
-.btn {
-	border-radius: 0px !important;
-	transition: linear, ease-in 0.3s !important;
-}
-.btn:focus {
-	color: white !important;
-}
-.btn-default {
-	color: black !important;
-	background: transparent !important;
-	border-color: white !important;
-	padding: 2% !important;
-}
-.btn-default:hover {
-	color: white !important;
-	background: black !important;
-	border-color: black !important;
-}
-.btn-default:focus {
-	outline: none !important;
-	text-decoration: none !important;
-	color: white !important;
-}
-.btn-default a {
-	color: black !important;
-}
-.btn-default a:focus {
-	color: red !important;
-}
+
 </style>
 
 <body>
@@ -186,36 +112,35 @@ a.navbar-brand {
 
 	    <!-- Navbar menu items -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">      
-	      <ul class="nav navbar-nav navbar-right">
-	        <li><a href="http://www.nyc.gov/nyc-resources/categories.page" target="_blank">NYC Resources</a></li>
-	        <li><a href="http://www.nyc.gov/311/" target="_blank">311</a></li>
-	        <li><a href="http://www.nyc.gov/office-of-the-mayor/" target="_blank">Office of the Mayor</a></li>   
+	      <ul class="nav navbar-nav navbar-right">	        
+	        <li><a href="http://www1.nyc.gov/site/doh/services/dog-licenses.page" target="_blank">Dog License</a></li>
+	        <li><a href="http://www1.nyc.gov/" target="_blank">NYC.gov</a></li>
+	        <li><a href="http://www1.nyc.gov/office-of-the-mayor/" target="_blank">Office of the Mayor</a></li>   
 	      </ul>
 	    </div><!-- /.navbar-collapse -->
 	</div><!-- /.container-fluid -->
 </nav>
 
-<div class="container info">	
+<div class="container">	
 	<div id="title">
 		<h1>Dog Names in New York City</h1>
 	</div>
 	<div class="title">
-		<p>Each bubble represents a dog name<br />
+		<p>Each bubble represents a dog name
 			by frequency of occurrence. <br />
 			Hover on a bubble to show details.</p>
+       
+    	<input type="text" id="userInput" class="form-control" placeholder="Search Name">
+    	<a class="link" href="http://www1.nyc.gov/site/doh/services/dog-licenses.page" target="_blank">Click here for Dog License</a>
         
-        <div class="search">
-        	<input type="text" id="userInput" class="form-control" placeholder="Search Name">
-        	<!-- <div class="well"></div> -->
-        </div>
-        <div class="button"></div>
-
 	</div>
+
+	
+        
 
 	<div id = "chart">
 		<div id = "text"></div>
 	</div>
-
 
 </div>
 
@@ -228,23 +153,28 @@ a.navbar-brand {
 <script>
 var color = d3.scale.linear().range(["#156b87","purple"]);
 var size = 1000;
+
 var pack = d3.layout.pack()
     .sort(null)
     .size([size, size-100])
     .value(function(d) { return d.Count_AnimalName * 10; })
     .padding(2);
+
 var svg = d3.select("#chart").append("svg")
     .attr("width", size)
     .attr("height", size)
     .style("display", "block")
     .style("margin", "auto");
+
 d3.csv("https://raw.githubusercontent.com/Kaz-A/dog_names/master/dogNames2.csv", ready);
+
 function ready(error, data) {
 	if (error) throw error;
 	console.log(data);
 	data.forEach(function(d) {
 		d.Count_AnimalName = +d.Count_AnimalName;
 	});
+
   	color.domain(d3.extent(data, function(d) { return d.Count_AnimalName; }));
   	
   	var circles = svg.selectAll("circle")
@@ -279,13 +209,17 @@ function ready(error, data) {
 	    subtext.append("h4")
 	    	.text(name == "" ? "" : count + " dog names");
 	};
+
 	function unsearch(d) {
     	circles.classed("circle-hover", false);
     	d3.select("#text").html("");
   	};
+
 };
+
 d3.select(self.frameElement).style("height", size + "px");
-  </script>
+
+</script>
 
 
 </body>
